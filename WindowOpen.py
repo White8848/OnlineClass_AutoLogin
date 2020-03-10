@@ -8,10 +8,16 @@ import re
 import webbrowser
 import tkinter as tk
 import tkinter.messagebox
+import os
 
 user_data = []
 def read_user_data():
-    f = open(r'C:\Users\23567\Desktop\python test\test.txt', 'r', encoding='utf-8')
+    if os.path.exists(os.getcwd()+'\\data.txt') == False:
+        f = open(os.getcwd() + '\\data.txt', "w")
+        f.write("123456\n"+"zhangsan\n"+"123456")
+        f.close()
+
+    f = open(os.getcwd()+"\\data.txt", 'r', encoding='utf-8')
     for data in f.readlines():
         if len(data) != 0:
             user_data.append(data.strip('\n'))
@@ -34,6 +40,8 @@ def main():
     tk.Label(window, text='Account:', font=('Arial', 14)).place(x=5, y=45)
     tk.Label(window, text='Password:', font=('Arial', 14)).place(x=5, y=85)
 
+    tk.Label(window, text='Author:Yirule', font=('Arial', 14)).place(x=380, y=220)
+
     # 课程ID
     var_class_id = tk.StringVar()
     var_class_id.set(user_data[0])
@@ -55,18 +63,21 @@ def main():
         user1 = au.User(entry_class_id.get(), entry_account.get(), entry_password.get())
         responseRes = requests.post(user1.postUrl, data=user1.postData, headers=user1.header)
 
-        if tkinter.messagebox.askyesno(title='提示', message='是否保存密码？'):
-            f = open(r'C:\Users\23567\Desktop\python test\test.txt', 'w', encoding='utf-8')
-            f.write(entry_class_id.get() + '\n' + entry_account.get() + '\n' + entry_password.get())
-            f.close()
+        if len(entry_class_id.get()) != 0 and len(entry_account.get()) != 0 and len(entry_password.get()) != 0:
+            if tkinter.messagebox.askyesno(title='提示', message='是否保存密码？'):
+                f = open(os.getcwd()+"\\data.txt", 'w', encoding='utf-8')
+                f.write(entry_class_id.get() + '\n' + entry_account.get() + '\n' + entry_password.get())
+                f.close()
 
-        pattern = re.compile(r'gensee://6170.*3b0a')
-        url = re.findall(pattern, responseRes.text)
-        # print(url)
-        if len(url) != 0:
-            webbrowser.open(url[0], new=0, autoraise=True)
+            pattern = re.compile(r'gensee://6170.*3b0a')
+            url = re.findall(pattern, responseRes.text)
+            # print(url)
+            if len(url) != 0:
+                webbrowser.open(url[0], new=0, autoraise=True)
+            else:
+                tkinter.messagebox.showerror(title='警告', message='ID或密码错误')
         else:
-            tkinter.messagebox.showerror(title='ID或密码错误', message='请重新输入')
+            tkinter.messagebox.showerror(title = '警告', message='输入不能为空')
 
     log = tk.Button(window, text='Login', font=('Arial', 12), width=10, height=3, command=login)
     log.place(x=365, y=25)

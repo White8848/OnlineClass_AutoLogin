@@ -11,6 +11,8 @@ import tkinter.messagebox
 import os
 
 user_data = []
+
+
 def read_user_data():
     if os.path.exists(os.getcwd()+'\\data.txt') == False:
         f = open(os.getcwd() + '\\data.txt', "w")
@@ -22,6 +24,27 @@ def read_user_data():
         if len(data) != 0:
             user_data.append(data.strip('\n'))
     f.close()
+
+
+def login(class_id, account, password):
+    user1 = au.User(class_id, account, password)
+    responseRes = requests.post(user1.postUrl, data=user1.postData, headers=user1.header)
+
+    if len(class_id) != 0 and len(class_id) != 0 and len(password) != 0:
+        if tkinter.messagebox.askyesno(title='提示', message='是否保存密码？'):
+            f = open(os.getcwd()+"\\data.txt", 'w', encoding='utf-8')
+            f.write(class_id + '\n' + account + '\n' + password)
+            f.close()
+
+        pattern = re.compile(r'gensee://6170.*3b0a')
+        url = re.findall(pattern, responseRes.text)
+        # print(url)
+        if len(url) != 0:
+            webbrowser.open(url[0], new=0, autoraise=True)
+        else:
+            tkinter.messagebox.showerror(title='警告', message='ID或密码错误')
+    else:
+        tkinter.messagebox.showerror(title = '警告', message='输入不能为空')
 
 
 def main():
@@ -59,27 +82,8 @@ def main():
     entry_password = tk.Entry(window, textvariable=var_password, font=('Arial', 14))
     entry_password.place(x=120, y=85)
 
-    def login():
-        user1 = au.User(entry_class_id.get(), entry_account.get(), entry_password.get())
-        responseRes = requests.post(user1.postUrl, data=user1.postData, headers=user1.header)
-
-        if len(entry_class_id.get()) != 0 and len(entry_account.get()) != 0 and len(entry_password.get()) != 0:
-            if tkinter.messagebox.askyesno(title='提示', message='是否保存密码？'):
-                f = open(os.getcwd()+"\\data.txt", 'w', encoding='utf-8')
-                f.write(entry_class_id.get() + '\n' + entry_account.get() + '\n' + entry_password.get())
-                f.close()
-
-            pattern = re.compile(r'gensee://6170.*3b0a')
-            url = re.findall(pattern, responseRes.text)
-            # print(url)
-            if len(url) != 0:
-                webbrowser.open(url[0], new=0, autoraise=True)
-            else:
-                tkinter.messagebox.showerror(title='警告', message='ID或密码错误')
-        else:
-            tkinter.messagebox.showerror(title = '警告', message='输入不能为空')
-
-    log = tk.Button(window, text='Login', font=('Arial', 12), width=10, height=3, command=login)
+    log = tk.Button(window, text='Login', font=('Arial', 12), width=10, height=3,
+                    command=lambda: login(entry_class_id.get(), entry_account.get(), entry_password.get()))
     log.place(x=365, y=25)
 
     # 第5步，主窗口循环显示

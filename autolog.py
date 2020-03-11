@@ -35,11 +35,12 @@ class Subject(object):
 
         if len(self.class_name) != 0 and len(self.class_id) != 0 and \
                 len(self.account) != 0 and len(self.password) != 0:
+            """
             if tkinter.messagebox.askyesno(title='提示', message='是否保存密码？'):
                 f = open(os.getcwd() + "\\data.txt", 'w', encoding='utf-8')
-                f.write(self.class_id + '\n' + self.account + '\n' + self.password)
+                f.write(self.class_id + '\n' + self.account + '\n' + self.password + '\n')
                 f.close()
-
+            """
             url = re.findall(re.compile(r'gensee://6170.*3b0a'), response_res.text)
             # print(url)
             if len(url) != 0:

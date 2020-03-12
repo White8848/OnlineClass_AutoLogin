@@ -10,19 +10,20 @@ import os
 user_data = []
 subject = []
 log_sub = []
+window = tk.Tk()
 
 
 def read_user_data():
     # data文件检查
     if os.path.exists(os.getcwd()+'\\data.txt') == False:
         f = open(os.getcwd() + '\\data.txt', "w")
-        f.write("abc\n"+"123456\n"+"zhangsan\n"+"123459\n")
+        f.write("abc\n123456\nzhangsan\n123459\n")
         f.close()
     else:
         size = os.path.getsize(os.getcwd() + '\\data.txt')
         if size < 1:
             f = open(os.getcwd() + '\\data.txt', "w")
-            f.write("abc\n" + "123456\n" + "zhangsan\n" + "123459\n")
+            f.write("abc\n123456\nzhangsan\n123459\n")
             f.close()
 
     f = open(os.getcwd()+"\\data.txt", 'r', encoding='gbk')
@@ -43,26 +44,8 @@ def add_subject(class_name, class_id, account, password, list1):
     subject.append(au.Subject(class_name, class_id, account, password))
     list1.insert('end', class_name)
     f = open(os.getcwd() + '\\data.txt', "a")
-    f.write(class_name+"\n" + class_id+"\n" + account+"\n" + password+"\n")
+    f.write("%s\n%s\n%s\n%s\n" % (class_name, class_id, account, password))
     f.close()
-
-
-def refresh(tx1, tx2, tx3, tx4, list1):
-    tx1.delete(0, 'end')
-    tx2.delete(0, 'end')
-    tx3.delete(0, 'end')
-    tx4.delete(0, 'end')
-
-    number = list(list1.curselection())
-
-    tx1.insert('end', subject[number[0]].class_name)
-    tx2.insert('end', subject[number[0]].class_id)
-    tx3.insert('end', subject[number[0]].account)
-    tx4.insert('end', subject[number[0]].password)
-
-    log_sub[0] = au.Subject(subject[number[0]].class_name, subject[number[0]].class_id,
-                         subject[number[0]].account, subject[number[0]].password)
-
 
 def delete(list1):
     number = list(list1.curselection())
@@ -71,31 +54,30 @@ def delete(list1):
     del subject[num]
     f = open(os.getcwd() + '\\data.txt', "w")
     for i in subject:
-        f.write(i.class_name + "\n" + i.class_id + "\n"+ i.account + "\n" + i.password + "\n")
+        f.write("%s\n%s\n%s\n%s\n" % (i.class_name, i.class_id, i.account, i.password))
     f.close()
 
 
 def main():
 
-    # 第1步，实例化object，建立窗口window
-    window = tk.Tk()
-
     # 第2步，给窗口的可视化起名字
-    window.title('自动登陆器')
+    window.title('自动登陆器v1.1')
 
     # 第3步，设定窗口的大小(长 * 宽)
-    window.geometry('410x160')  # 这里的乘是小x
+    window.geometry('410x160+450+250')  # 这里的乘是小x
 
     # 输入信息
-    tk.Label(window, text='Class Name:', font=('Arial', 12)).place(x=40, y=5)
-    tk.Label(window, text='Class ID:', font=('Arial', 12)).place(x=40, y=42)
-    tk.Label(window, text='Account:', font=('Arial', 12)).place(x=40, y=79)
-    tk.Label(window, text='Password:', font=('Arial', 12)).place(x=40, y=116)
+    tk.Label(window, text='Class Name:', font=('Times', 13)).place(x=5, y=5)
+    tk.Label(window, text='Class ID:', font=('Times', 13)).place(x=5, y=42)
+    tk.Label(window, text='Account:', font=('Times', 13)).place(x=5, y=79)
+    tk.Label(window, text='Password:', font=('Times', 13)).place(x=5, y=116)
 
-    tk.Label(window, text='Author:Yirule', font=('Arial', 10)).place(x=325, y=140)
+    tk.Label(window, text='Author:弈云', font=('Times', 10)).place(x=325, y=140)
+
+
     # 课程列表
-    lb = tk.Listbox(window, listvariable=None, width=4, height=7)
-    lb.place(x=5, y=5)
+    lb = tk.Listbox(window, listvariable=None, width=5, height=7, font=('Times', 12))
+    lb.place(x=272, y=5)
     # lb.selection_set(0)
 
     for sub in subject:
@@ -103,39 +85,65 @@ def main():
     # 课程名称
     var_class_name = tk.StringVar()
     var_class_name.set(user_data[0])
-    entry_class_name = tk.Entry(window, textvariable=var_class_name, font=('Arial', 12))
-    entry_class_name.place(x=135, y=5)
+    entry_class_name = tk.Entry(window, textvariable=var_class_name, font=('Times', 12))
+    entry_class_name.place(x=100, y=5)
     # 课程ID
     var_class_id = tk.StringVar()
     var_class_id.set(user_data[1])
-    entry_class_id = tk.Entry(window, textvariable=var_class_id, font=('Arial', 12))
-    entry_class_id.place(x=135, y=42)
+    entry_class_id = tk.Entry(window, textvariable=var_class_id, font=('Times', 12))
+    entry_class_id.place(x=100, y=42)
     # 用户名
     var_account = tk.StringVar()
     var_account.set(user_data[2])
-    entry_account = tk.Entry(window, textvariable=var_account, font=('Arial', 12))
-    entry_account.place(x=135, y=79)
+    entry_account = tk.Entry(window, textvariable=var_account, font=('Times', 12))
+    entry_account.place(x=100, y=79)
     # 用户密码
     var_password = tk.StringVar()
     var_password.set(user_data[3])
-    entry_password = tk.Entry(window, textvariable=var_password, font=('Arial', 12))
-    entry_password.place(x=135, y=116)
+    entry_password = tk.Entry(window, textvariable=var_password, font=('Times', 12))
+    entry_password.place(x=100, y=116)
+
     # 按钮：登录
     log_sub.append(au.Subject(entry_class_name.get(), entry_class_id.get(), entry_account.get(), entry_password.get()))
-    log = tk.Button(window, text='Login', font=('Arial', 12), width=8, height=1,command=lambda: log_sub[0].login())
+    log = tk.Button(window, text='Login', font=('Times', 12), width=8, height=2,command=lambda: log_sub[0].login())
     log.place(x=325, y=4)
-    # 按钮：更新信息
-    ref = tk.Button(window, text='Refresh', font=('Arial', 12), width=8, height=1, command=lambda: refresh(
-        entry_class_name, entry_class_id, entry_account, entry_password, lb))
-    ref.place(x=325, y=38)
     # 按钮：添加课程
-    add = tk.Button(window, text='Add', font=('Arial', 12), width=8, height=1,
-                    command=lambda: add_subject(entry_class_name.get(), entry_class_id.get(), entry_account.get(),
-                                               entry_password.get(), lb))
-    add.place(x=325, y=72)
+    add = tk.Button(window, text='Add', font=('Times', 12), width=8, height=1,
+                    command=lambda: add_subject(entry_class_name.get(), entry_class_id.get(), entry_account.get()
+                                                , entry_password.get(), lb))
+    add.place(x=325, y=65)
     # 按钮：删除课程
-    delt = tk.Button(window, text='Delete', font=('Arial', 12), width=8, height=1, command=lambda: delete(lb))
+    delt = tk.Button(window, text='Delete', font=('Times', 12), width=8, height=1, command=lambda: delete(lb))
     delt.place(x=325, y=106)
+    change = True
+    num = 0
+
+
+    def change_subject():
+        number = list(lb.curselection())
+        nonlocal change
+        nonlocal num
+        if len(number) != 0:
+            if num == number[0]:
+                subject[number[0]].class_name = entry_class_name.get()
+                subject[number[0]].class_id = entry_class_id.get()
+                subject[number[0]].account = entry_account.get()
+                subject[number[0]].password = entry_password.get()
+                log_sub[0] = au.Subject(subject[number[0]].class_name, subject[number[0]].class_id
+                                        , subject[number[0]].account, subject[number[0]].password)
+                f = open(os.getcwd() + '\\data.txt', "w")
+                for i in subject:
+                    f.write("%s\n%s\n%s\n%s\n" % (i.class_name, i.class_id, i.account, i.password))
+                f.close()
+            else:
+                num = number[0]
+                var_class_name.set(subject[number[0]].class_name)
+                var_class_id.set(subject[number[0]].class_id)
+                var_account.set(subject[number[0]].account)
+                var_password.set(subject[number[0]].password)
+
+        window.after(100, change_subject)
+    window.after(100, change_subject)
 
     # 主窗口循环显示
     window.mainloop()

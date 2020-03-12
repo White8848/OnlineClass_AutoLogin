@@ -49,3 +49,6 @@ class Subject(object):
                 tkinter.messagebox.showerror(title='警告', message='ID或密码错误')
         else:
             tkinter.messagebox.showerror(title='警告', message='输入不能为空')
+
+    def log_time_init(self, time):
+        self.time = time

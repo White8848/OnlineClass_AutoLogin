@@ -61,7 +61,7 @@ def delete(list1):
 def main():
 
     # 第2步，给窗口的可视化起名字
-    window.title('自动登陆器v1.1')
+    window.title('自动登陆器v1.2')
 
     # 第3步，设定窗口的大小(长 * 宽)
     window.geometry('410x160+450+250')  # 这里的乘是小x

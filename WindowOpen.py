@@ -6,6 +6,7 @@ import autolog as au
 import tkinter as tk
 import tkinter.messagebox
 import os
+import datetime
 
 user_data = []
 subject = []
@@ -15,16 +16,16 @@ window = tk.Tk()
 
 def read_user_data():
     # data文件检查
-    if os.path.exists(os.getcwd()+'\\data.txt') == False:
-        f = open(os.getcwd() + '\\data.txt', "w")
-        f.write("abc\n123456\nzhangsan\n123459\n")
-        f.close()
-    else:
+    if os.path.exists(os.getcwd()+'\\data.txt'):
         size = os.path.getsize(os.getcwd() + '\\data.txt')
         if size < 1:
             f = open(os.getcwd() + '\\data.txt', "w")
-            f.write("abc\n123456\nzhangsan\n123459\n")
+            f.write("Subject\nClass ID\nYour Account\nYour Password\n")
             f.close()
+    else:
+        f = open(os.getcwd() + '\\data.txt', "w")
+        f.write("Subject\nClass ID\nYour Account\nYour Password\n")
+        f.close()
 
     f = open(os.getcwd()+"\\data.txt", 'r', encoding='gbk')
 
@@ -40,12 +41,13 @@ def read_user_data():
         tkinter.messagebox.showerror(title='警告', message='数据损坏\n请删除data.txt并重启！')
 
 
-def add_subject(class_name, class_id, account, password, list1):
-    subject.append(au.Subject(class_name, class_id, account, password))
-    list1.insert('end', class_name)
+def add_subject(list1):
+    list1.insert('end', "Subject")
+    subject.append(au.Subject("Subject", "Class ID", "Your Account", "Your Password"))
     f = open(os.getcwd() + '\\data.txt', "a")
-    f.write("%s\n%s\n%s\n%s\n" % (class_name, class_id, account, password))
+    f.write("Subject\nClass ID\nYour Account\nYour Password\n")
     f.close()
+
 
 def delete(list1):
     number = list(list1.curselection())
@@ -64,7 +66,7 @@ def main():
     window.title('自动登陆器v1.2')
 
     # 第3步，设定窗口的大小(长 * 宽)
-    window.geometry('410x160+450+250')  # 这里的乘是小x
+    window.geometry('410x165+450+250')  # 这里的乘是小x
 
     # 输入信息
     tk.Label(window, text='Class Name:', font=('Times', 13)).place(x=5, y=5)
@@ -72,9 +74,7 @@ def main():
     tk.Label(window, text='Account:', font=('Times', 13)).place(x=5, y=79)
     tk.Label(window, text='Password:', font=('Times', 13)).place(x=5, y=116)
 
-    tk.Label(window, text='Author:弈云', font=('Times', 10)).place(x=325, y=140)
-
-
+    tk.Label(window, text='Author:弈云', font=('Times', 10)).place(x=333, y=145)
     # 课程列表
     lb = tk.Listbox(window, listvariable=None, width=5, height=7, font=('Times', 12))
     lb.place(x=272, y=5)
@@ -105,19 +105,16 @@ def main():
 
     # 按钮：登录
     log_sub.append(au.Subject(entry_class_name.get(), entry_class_id.get(), entry_account.get(), entry_password.get()))
-    log = tk.Button(window, text='Login', font=('Times', 12), width=8, height=2,command=lambda: log_sub[0].login())
-    log.place(x=325, y=4)
+    log = tk.Button(window, text='Login', font=('Times', 12), width=8, height=2, command=lambda: log_sub[0].login())
+    log.place(x=322, y=4)
     # 按钮：添加课程
-    add = tk.Button(window, text='Add', font=('Times', 12), width=8, height=1,
-                    command=lambda: add_subject(entry_class_name.get(), entry_class_id.get(), entry_account.get()
-                                                , entry_password.get(), lb))
-    add.place(x=325, y=65)
+    add = tk.Button(window, text='Add', font=('Times', 12), width=8, height=1,command=lambda: add_subject(lb))
+    add.place(x=322, y=65)
     # 按钮：删除课程
     delt = tk.Button(window, text='Delete', font=('Times', 12), width=8, height=1, command=lambda: delete(lb))
-    delt.place(x=325, y=106)
+    delt.place(x=322, y=106)
     change = True
     num = 0
-
 
     def change_subject():
         number = list(lb.curselection())
@@ -144,6 +141,14 @@ def main():
 
         window.after(100, change_subject)
     window.after(100, change_subject)
+
+    # 时钟插件
+    def uptime():
+        time_label["text"] = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        window.after(100, uptime)
+    time_label = tkinter.Label(text=datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+    time_label.place(x=5, y=145)
+    window.after(100, uptime)
 
     # 主窗口循环显示
     window.mainloop()
